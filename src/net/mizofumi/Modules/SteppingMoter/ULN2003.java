@@ -37,6 +37,10 @@ public class ULN2003 {
         this.delay = delay;
     }
 
+    public int getDelay() {
+        return delay;
+    }
+
     protected void initPattern(){
         mStepPattern = new ArrayList<>();
         mStepPattern.add(new Pattern(1,0,0,0));

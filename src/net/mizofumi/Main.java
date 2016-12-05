@@ -41,60 +41,36 @@ public class Main {
          */
         HC_SR04 ultrasonic_sensor = new HC_SR04( RaspiPin.GPIO_26, RaspiPin.GPIO_22 );
 
-        //超音波センサのイベントを設定
         ultrasonic_sensor.setListener(new DistanceMonitorListener() {
-
-            //  センサが値を読んだ時に呼ばれるメソッド
-            //  measureDistanceに値がセットされている
             @Override
             public void onListen(float measureDistance) {
-                System.out.println(measureDistance); // 距離を画面出力
+                System.out.println(measureDistance);
+                if (measureDistance >=10){
 
-                //  10cm以下の場合は減速し、それ以外の場合は標準速度。
-                if (measureDistance < 10){
-                    motor1.setDelay(10);
-                    motor2.setDelay(10);
-                }else {
-                    motor1.setDefaultDelay();
-                    motor2.setDefaultDelay();
-                }
-
-                //  5cm 以下で停止
-                if (measureDistance < 5){
-                    System.out.println("STOP!");
-                    if (motor1.isRunning())
-                        motor1.stop();
-
-                    if (motor2.isRunning())
-                        motor2.stop();
-
-                }else {
-                    if (!motor1.isRunning())
+                    if (!motor1.isRunning()){
                         motor1.forward();
+                    }
+                    if (!motor2.isRunning()){
+                        motor2.backward();
+                    }
 
-                    if (!motor2.isRunning())
-                        motor2.forward();
                 }
+                if (measureDistance <=5){
+                    if (motor1.isRunning()){
+                        motor1.stop();
+                    }
+                    if (motor2.isRunning()){
+                        motor2.stop();
+                    }
+                }
+
+
 
             }
         });
-
-        //モータ前進
-        motor1.forward();
-        motor2.forward();
-
-        //超音波センサの監視をスタート
         ultrasonic_sensor.startWatch();
-
-        //60Sec間動かす
-        Thread.sleep(60000); //60sec wait
-
-        //超音波センサの監視をストップ
+        Thread.sleep(60000);
         ultrasonic_sensor.stopWatch();
-
-        //モータ停止
-        motor1.stop();
-        motor2.stop();
 
 
     }
